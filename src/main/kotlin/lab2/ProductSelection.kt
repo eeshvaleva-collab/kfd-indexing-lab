@@ -4,8 +4,7 @@ fun selectProducts(
     recommendedIds: List<Long>,
     excludedIds: List<Long>
 ): List<Product> {
-    val mockService = ProductRecommendationService()
-    mockService.LoadCatalog(products)
+    ProductRecommendationService.LoadCatalog(products)
 
-    return mockService.selectProducts(recommendedIds, excludedIds)
+    return ProductRecommendationService.selectProducts(recommendedIds, excludedIds)
 }

@@ -1,6 +1,5 @@
 package lab2
 
-import lab2.ProductRecommendationService.Request
 
 object ProductRecommendationService {
     private data class Request(
