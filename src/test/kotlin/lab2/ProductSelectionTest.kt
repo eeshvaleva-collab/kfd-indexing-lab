@@ -190,4 +190,23 @@ class ProductSelectionTest {
         assertEquals(listOf(createPrinter()), secondResult, "Subsequent call returned a different result!")
     }
 
+    @Test
+    fun `should select matching products according to recommendation order`() {
+        val keyboard = createKeyboard()
+        val mouse = createMouse()
+        val printer = createPrinter()
+        val scanner = createScanner()
+        val webcam = createWebcam()
+        val monitor = createMonitor()
+
+        val products = listOf(keyboard, mouse, printer, scanner, webcam, monitor)
+
+        val result = selectProducts(
+            products,
+            listOf(6L, 2L, 3L, 5L, 4L, 1L),
+            emptyList()
+        )
+
+        assertEquals(listOf(monitor, mouse, printer, webcam, scanner, keyboard), result)
+    }
 }

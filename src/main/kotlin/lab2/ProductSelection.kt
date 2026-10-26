@@ -4,7 +4,7 @@ fun selectProducts(
     recommendedIds: List<Long>,
     excludedIds: List<Long>
 ): List<Product> {
-    ProductRecommendationService.LoadCatalog(products)
+    ProductRecommendationService.loadCatalog(products)
 
     return ProductRecommendationService.selectProducts(recommendedIds, excludedIds)
 }

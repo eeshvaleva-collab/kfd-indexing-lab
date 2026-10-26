@@ -1,58 +1,39 @@
 package lab2
 
-
 object ProductRecommendationService {
-    private data class Request(
-        val recommendedIds: List<Long>,
-        val excludedIds: List<Long>,
-        val limit: Int? = null,
-        val onInspect: (() -> Unit)? = null
-    ) {
-        init {
-            if (limit != null) {
-                require(limit >= 0) { "Limit cannot be negative. Provided value: $limit" }
-            }
-        }
-    }
     @Volatile
     private var productCatalog: Map<Long, Product> = emptyMap()
 
-
-    fun LoadCatalog(newCatalog: List<Product>) {
-        this.productCatalog = newCatalog.associateBy { it.id }
-    }
-
-    fun selectProducts(
-        recommendedIds: List<Long>,
-        excludedIds: List<Long>
-    ): List<Product>{
-        val context = Request(recommendedIds, excludedIds)
-        return selectGeneral(context)
+    fun loadCatalog(newCatalog: List<Product>){
+        productCatalog = newCatalog.associateBy { it.id }
     }
 
     fun selectProducts(
         recommendedIds: List<Long>,
         excludedIds: List<Long>,
-        limit: Int
+        limit: Int? = null
     ): List<Product> {
-        if (limit == 0) return emptyList()
-        val context = Request(recommendedIds, excludedIds, limit)
+        if (limit != null) {
+            require(limit >= 0) { "Limit cannot be negative. Provided value: $limit" }
+            if (limit == 0) return emptyList()
+        }
 
-        return selectGeneral(context)
-    }
-
-    private fun selectGeneral(
-        context: Request
-    ): List<Product> {
         val currentMap = this.productCatalog
-        val excludedSet = context.excludedIds.toSet()
+        val excludedSet = excludedIds.toSet()
+        val base = recommendedIds.asSequence()
 
-        val seq = context.recommendedIds.asSequence()
-            .filter { it !in excludedSet }
-            .distinct().mapNotNull{ id -> currentMap[id] }.filter{ it.available}
+        val seq = if (excludedSet.size > recommendedIds.size) {
+            base.filter { it !in excludedSet }
+                .distinct()
+        }
+        else {
+            base.distinct()
+                .filter { it !in excludedSet }
+        }
 
+        val processedSeq = seq.mapNotNull{ id -> currentMap[id] }.filter{ it.available}
 
-        return if (context.limit != null) seq.take(context.limit).toList() else seq.toList()
+        return if (limit != null) processedSeq.take(limit).toList() else processedSeq.toList()
     }
 }
 
