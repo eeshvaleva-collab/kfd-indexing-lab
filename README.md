@@ -40,7 +40,7 @@ Windows PowerShell:
 
 **Файл с реализацией `selectProducts`:**
 
-`src/main/kotlin/lab2/ProductSelection.kt`
+[ProductSelection.kt](src/main/kotlin/lab2/ProductSelection.kt)
 
 **Как работает функция и почему выбран такой способ обработки данных?**
 
